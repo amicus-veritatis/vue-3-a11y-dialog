@@ -4,8 +4,8 @@
 :role="roleAttr"
 ref="Dialog"
 @click.self="close"
-@close="emits('close', returnValue)"
-@cancel="emits('cancel', returnValue)"
+@close="emits('close',Dialog.returnValue)"
+@cancel="emits('cancel',Dialog.returnValue)"
 :aria-modal="modal"
 :aria-labelledby="titleRefId"
 :aria-label="label"
@@ -56,7 +56,7 @@ const {
     contentId
 } = defineProps<propTypes>()
 const emits = defineEmits<emitTypes>()
-const Dialog = $ref()
+const Dialog = $ref({})
 const close = (arg)=>{
     Dialog.close(arg)
 }
@@ -64,14 +64,15 @@ const open = ()=>{
     if (modal) Dialog.showModal()
     else Dialog.show()
 }
-const returnValue = $computed(()=>{
-    return Dialog?.returnValue
-})
+const headingSelector: Array<String> = [
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    "[role='heading']"
+]
 const titleRefId = $computed(()=>{
-    if (label||!titleId) return null
+    if (label||titleId) return label||titleId
     else {
-        return titleId 
-        // TO-DO: SELECTOR in case  of !label && ! titleId
+        const title = Dialog?.querySelector(headingSelector.join(','))
+        return title.id
     }
 })
 const roleAttr = $computed(()=>{
@@ -97,7 +98,6 @@ const formClasses = $computed(()=>{
 })
 defineExpose({
     close,
-    open,
-    returnValue
+    open 
 })
 </script>
