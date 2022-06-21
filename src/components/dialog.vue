@@ -72,7 +72,7 @@ const titleRefId = $computed(()=>{
     if (label||titleId) return label||titleId
     else {
         const title = Dialog?.querySelector(headingSelector.join(','))
-        return title.id
+        return title?.id
     }
 })
 const roleAttr = $computed(()=>{
