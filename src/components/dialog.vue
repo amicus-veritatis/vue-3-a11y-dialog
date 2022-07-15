@@ -4,8 +4,8 @@
     :role="roleAttr"
     ref="Dialog"
     @click.self="close"
-    @close="emits('close', Dialog.returnValue)"
-    @cancel="emits('cancel', Dialog.returnValue)"
+    @close="emits('close', Dialog?.returnValue)"
+    @cancel="emits('cancel', Dialog?.returnValue)"
     :aria-modal="modal"
     :aria-labelledby="titleRefId"
     :aria-label="label"
@@ -26,7 +26,7 @@ interface propTypes {
   label?: string;
   containerClass?: string;
   formClass?: string;
-  classNames?: object | Function;
+  classNames?: Function;
   rootClass?: string;
   alert?: boolean;
   modal?: boolean;
@@ -40,13 +40,11 @@ interface emitTypes {
 const {
   alert = false,
   modal = false,
-  classNames = () => {
-    return {
+  classNames = () =>({
       container: "dialog-container",
       root: "dialog-root",
       form: "dialog-form",
-    };
-  },
+  }),
   containerClass,
   rootClass,
   formClass,
@@ -55,7 +53,7 @@ const {
   contentId,
 } = defineProps<propTypes>();
 const emits = defineEmits<emitTypes>();
-const Dialog = $ref({});
+const Dialog = $ref<HTMLDialogElement>();
 const close = (arg) => {
   Dialog.close(arg);
 };
@@ -76,20 +74,20 @@ const titleRefId = $computed(() => {
   if (label || titleId) return label || titleId;
   else {
     const title = Dialog?.querySelector(headingSelector.join(","));
-    return title?.id;
+    return title.id;
   }
 });
 const roleAttr = $computed(() => {
   return alert ? "dialog" : "alertdialog";
 });
 const containerClasses = $computed(() => {
-  return [classNames().container, containerClass ?? null];
+  return [classNames().container, containerClass ?? undefined];
 });
 const rootClasses = $computed(() => {
-  return [classNames().root, rootClass ?? null];
+  return [classNames().root, rootClass ?? undefined];
 });
 const formClasses = $computed(() => {
-  return [classNames().form, formClass ?? null];
+  return [classNames().form, formClass ?? undefined];
 });
 defineExpose({
   close,
